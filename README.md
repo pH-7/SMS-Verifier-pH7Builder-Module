@@ -1,4 +1,4 @@
-# pH7CMS: CMS Verifier Module
+# pH7CMS: CMS Verifier Module ☎️
 
 *"SMS user verification" is a module [pH7CMS](https://github.com/pH7Software/pH7-Social-Dating-CMS) software for verifying user accounts by send texts to their mobile phones.*
 
