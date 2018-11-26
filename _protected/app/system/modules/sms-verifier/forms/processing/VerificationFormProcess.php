@@ -17,17 +17,27 @@ class VerificationFormProcess extends Form
     {
         parent::__construct();
 
-        if ($this->isVerificationCodeValid()) {
+        $iProfileId = $this->session->get(SmsVerificationCore::PROFILE_ID_SESS_NAME);
+        if ($this->isVerificationCodeValid($iProfileId)) {
             $oUserModel = new UserCoreModel;
-
-            $iProfileId = $this->session->get(SmsVerificationCore::PROFILE_ID_SESS_NAME);
             $sPhoneNumber = $this->session->get(SmsVerificationCore::PHONE_NUMBER_SESS_NAME);
 
             $oUserModel->approve(
                 $iProfileId,
                 1
             );
-            $oUserModel->updateProfile('phone', $sPhoneNumber, $iProfileId, DbTableName::MEMBER_INFO);
+
+            // Add phone number to DB field
+            $oUserModel->updateProfile(
+                'phone',
+                $sPhoneNumber,
+                $iProfileId,
+                DbTableName::MEMBER_INFO
+            );
+
+            // Clear "active" DB field from the cache
+            (new UserCore)->clearReadProfileCache($iProfileId);
+
             unset($oUserModel);
 
             Header::redirect(
@@ -43,12 +53,12 @@ class VerificationFormProcess extends Form
     }
 
     /**
+     * @param int $iProfileId
+     *
      * @return bool
      */
-    private function isVerificationCodeValid()
+    private function isVerificationCodeValid($iProfileId)
     {
-        $sEmail = $this->session->get(SmsVerificationCore::USER_EMAIL_SESS_NAME);
-
-        return $this->httpRequest->post('verification_code') === Verification::getVerificationCode($sEmail);
+        return $this->httpRequest->post('verification_code') === Verification::getVerificationCode($iProfileId);
     }
 }
