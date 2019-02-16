@@ -31,7 +31,6 @@ class SmsGatewayFactory
                 $sSenderNumber = Config::getInstance()->values['module.setting']['clickatell.sender.phone_number'];
                 $sApiToken = Config::getInstance()->values['module.setting']['clickatell.api_token'];
                 return new ClickatellProvider($sSenderNumber, $sApiToken);
-                break;
 
             case self::TWILIO_NAME:
                 $sSenderNumber = Config::getInstance()->values['module.setting']['twilio.sender.phone_number'];
